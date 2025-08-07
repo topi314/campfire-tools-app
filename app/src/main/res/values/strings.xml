@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Campfire Tools</string>
     <string name="share_import_event">Import Event</string>
+    <string name="share_open_event">Open Event</string>
 </resources>

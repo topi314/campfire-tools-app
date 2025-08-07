@@ -21,14 +21,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import wtf.topi.campfire.tools.ui.theme.CampfireToolsAppTheme
 
-class MainActivity : ComponentActivity() {
+class ShareImportActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: ShareImportViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        intent = intent // Ensure the latest intent is set for the activity
 
         handleIntent(intent)
 
@@ -65,26 +64,23 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleIntent(intent: Intent?) {
-        if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
-            intent.getStringExtra(Intent.EXTRA_TEXT)?.let { link ->
-                Log.d("MainActivity", "Processing link: $link")
-                // Pass the link to the ViewModel to handle the import.
-                // The ViewModel will update isLoading and uiMessage states.
-                viewModel.importSharedLink(link)
-            }
-        } else {
-            // This case handles when the app is opened directly, not via share.
-            // Or if the intent is not as expected.
-            // Check if there's already a message from a previous operation. If not,
-            // and no link is being processed, you might want to call finish() or show a specific message.
-            if (viewModel.uiMessage.value == null && !viewModel.isLoading.value) {
-                // If opened directly without a share, and no ongoing operation or message
-                Log.d("MainActivity", "No shared link and no current operation/message. Finishing.")
-                Toast.makeText(this, "Please share a link to use this app.", Toast.LENGTH_LONG)
-                    .show()
-                finish()
-            }
+        if (intent?.action != Intent.ACTION_SEND || intent.type != "text/plain") {
+            Log.d("MainActivity", "No shared link and no current operation/message. Finishing.")
+            Toast.makeText(this, "Please share a link to use this app.", Toast.LENGTH_LONG).show()
+            finish()
+            return
         }
+
+        val link = intent.getStringExtra(Intent.EXTRA_TEXT)?.trim()
+        if (link.isNullOrEmpty()) {
+            Log.e("MainActivity", "Received empty or null link")
+            Toast.makeText(this, "No link provided", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        Log.d("MainActivity", "Processing link: $link")
+        viewModel.importSharedLink(link)
     }
 
 
@@ -101,7 +97,6 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-
 
 
 @Composable

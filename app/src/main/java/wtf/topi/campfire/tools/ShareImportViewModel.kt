@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 import android.util.Log
 import kotlinx.coroutines.CancellationException
 
-class MainViewModel : ViewModel() {
+class ShareImportViewModel : ViewModel() {
 
-    private val _isLoading = MutableStateFlow<Boolean>(false)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _uiMessage = MutableStateFlow<String?>(null) // Renamed for clarity
