@@ -39,7 +39,7 @@ class ShareOpenActivity : ComponentActivity() {
         val link = Uri.Builder().apply {
             scheme("https")
             authority("campfire-tools.topi.wtf")
-            path("check-ins")
+            path("event")
             appendQueryParameter("event", eventLink)
         }.build()
 
